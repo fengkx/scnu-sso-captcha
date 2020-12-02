@@ -1,0 +1,17 @@
+{
+  "name": "captcha",
+  "version": "1.0.0",
+  "description": "",
+  "main": "fetch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "got": "^11.8.0",
+    "koa": "^2.13.0",
+    "koa-body": "^4.2.0",
+    "koa-router": "^10.0.0"
+  }
+}

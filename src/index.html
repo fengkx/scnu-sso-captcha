@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code</title>
+    <style>
+        main {
+            margin: auto;
+            max-width: 40rem;
+            text-align: center;
+            font-size: large;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <img id="img" width="200" height="100" src="/img/5114" />
+        <form id="form">
+            <input id="code" placeholder="code" type="text" />
+            <input autofocus autocomplete="false" type="submit" value="提交" />
+        </form>
+    </main>
+    <script>
+        const img = document.getElementById('img');
+        const form = document.getElementById('form')
+        const input = document.getElementById('code')
+        let splited = img.src.split('/')
+        function predict(id) {
+            fetch(`/p/${id}`).then((resp) => {
+                    resp.text().then(t => {
+                        input.value = t
+                    })
+                })
+        }
+        let id = Number(splited[splited.length-1])
+        // predict(id)
+        form.addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            if(!input.value) {
+                return
+            }
+            fetch('/img', {
+                method: 'POST',
+                body: JSON.stringify({
+                    code: input.value,
+                    id
+                })
+            }).then(() => {
+                id = id + 1;
+                img.src = `/img/${id}`
+                input.value = ''
+                // predict(id)
+            })
+        })
+    </script>
+</body>
+</html>

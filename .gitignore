@@ -1,0 +1,4 @@
+node_modules
+/model*
+/output
+.ipynb_checkpoints/
