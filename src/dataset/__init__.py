@@ -11,6 +11,8 @@ from config import CASESENTIVE, DICT_LEN, idict
 __dirname = os.path.dirname(os.path.abspath(__file__))
 marked_path = join(__dirname, 'codes', 'mark')
 files = [f for f in listdir(marked_path) if isfile(join(marked_path, f))]
+if CASESENTIVE:
+    files = list(filter(lambda n: not n.endswith('.jpeg'), files))
 np.random.shuffle(files)
 
 def cv_im_process(img, flatten=False, normalize=False):
@@ -67,7 +69,7 @@ def load_dataset():
     # print('label element shape',t_all[0].shape)
 
     total_size = x_all.shape[0]
-    test_size = min(int(total_size / 10), 256)
+    test_size = min(int(total_size / 10), 500)
     train_size = int(total_size - test_size)
     # print(total_size, test_size)
     x_train = x_all[:train_size]
