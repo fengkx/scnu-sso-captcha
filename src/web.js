@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const Koa = require('koa');
 const app = new Koa();
 const Router = require('koa-router');
@@ -16,7 +17,7 @@ router.post('/img', async (ctx) => {
 	const {id, code} = JSON.parse(body);
 	if(code) {
 		// fs.createReadStream(`${__dirname}/codes/raw/${id}.jpg`).pipe(fs.createWriteStream(`${__dirname}/codes/mark/${code}`))
-		const command = `cp ${__dirname}/dataset/codes/raw/${id}.jpg ${__dirname}/dataset/codes/mark/${code}`;
+		const command = `cp ${__dirname}/dataset/codes/raw/${id}.jpg ${__dirname}/dataset/codes/mark/${code}.jpeg`;
 		console.log(command)
 		exec(command)
 	}
@@ -43,8 +44,9 @@ async function predict(id)  {
 }
 router.get('/p/:id', async ctx => {
 	const id = ctx.params.id;
-	const p = await predict(id)
-	ctx.body =p
+	const resp = await fetch(`http://localhost:8000/p/${id}`);
+	const text = await resp.text();
+	ctx.body = text.substring(1, text.length-1)
 })
 
 app

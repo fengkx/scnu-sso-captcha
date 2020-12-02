@@ -20,7 +20,7 @@ history = model.fit(
     x_train,
     t_train,
     batch_size=300,
-    epochs=200,
+    epochs=10,
     validation_split=0.2,
     callbacks=[EpochPredictCallback()]
     )
@@ -32,6 +32,6 @@ model.save(OUTPUT_DIR)
 new_model = tf.keras.models.load_model(OUTPUT_DIR)
 checkpoint_predict(new_model, x_test, t_test)
 
-xx = cv_im_process(cv2.imread('./U6cG.jpg'), flatten=False, normalize=True)
-p = new_model.predict(np.array([xx]))
-print(vec2text(p[0]))
+# xx = cv_im_process(cv2.imread('./U6cG.jpg'), flatten=False, normalize=True)
+# p = new_model.predict(np.array([xx]))
+# print(vec2text(p[0]))
