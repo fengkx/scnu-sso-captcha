@@ -24,7 +24,7 @@ router.post('/img', async (ctx) => {
 	ctx.body = 'ok'
 })
 
-router.get('/code', (ctx) => {
+router.get('/code/:id?', (ctx) => {
 	ctx.type = 'text/html';
 	ctx.body = fs.createReadStream(`${__dirname}/index.html`)
 })
@@ -42,9 +42,12 @@ async function predict(id)  {
 		})
 	})
 }
-router.get('/p/:id', async ctx => {
+router.post('/p/:id', async ctx => {
 	const id = ctx.params.id;
-	const resp = await fetch(`http://localhost:8000/p/${id}`);
+	const data = JSON.parse(ctx.request.body).input
+	const resp = await fetch(`http://localhost:8000/p/${id}?q=${JSON.stringify(data)}`, {
+		method: 'GET',
+	});
 	const text = await resp.text();
 	ctx.body = text.substring(1, text.length-1)
 })

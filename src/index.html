@@ -14,8 +14,10 @@
     </style>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/opencv.js@1.2.1/opencv.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.7.0/dist/tf.min.js"></script>
     <main>
-        <img id="img" width="200" height="100" src="/img/5285" />
+        <img id="img" width="200" height="100" src="/img/3322" />
         <form id="form">
             <input id="code" placeholder="code" type="text" />
             <input autofocus autocomplete="false" type="submit" value="提交" />
@@ -26,15 +28,18 @@
         const form = document.getElementById('form')
         const input = document.getElementById('code')
         let splited = img.src.split('/')
-        function predict(id) {
-            fetch(`/p/${id}`).then((resp) => {
+        function predict(id, input) {
+            fetch(`/p/${id}`, {
+                method: 'POST',
+                body: JSON.stringify({input})
+            }).then((resp) => {
                     resp.text().then(t => {
                         input.value = t
                     })
                 })
         }
+    	path_elms = location.pathname.split('/')
         let id = Number(splited[splited.length-1])
-        predict(id)
         form.addEventListener('submit', (ev) => {
             ev.preventDefault();
             if(!input.value) {
@@ -53,6 +58,67 @@
                 predict(id)
             })
         })
+    </script>
+    <script>
+        const WIDTH = 100
+        const IDICT = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        const HEIGHT = 50
+        const $canvas = document.createElement('canvas')
+        $canvas.width = WIDTH
+        $canvas.height = HEIGHT
+        $canvas.width = WIDTH
+        $canvas.height = HEIGHT
+        const isUseLite = navigator.userAgent.indexOf('Firefox') >= 0
+        const modelDir = isUseLite ? 'js-model-lite-1': 'js-model-2'
+        const MODEL_URL = 'https://blog-static.fengkx.top/'+ modelDir +'/model.json'
+        
+        async function main() {
+        const $img = img.cloneNode()
+            $img.width = WIDTH
+            $img.height = HEIGHT
+
+            const ctx = $canvas.getContext('2d')
+            document.body.appendChild($canvas)
+            ctx.drawImage($img, 0, 0)
+            const imageData = ctx.getImageData(0,0,WIDTH, HEIGHT)
+            const mat=cv.matFromImageData(imageData)
+            let dst = new cv.Mat()
+            let src = mat
+            cv.cvtColor(src, src, cv.COLOR_BGR2GRAY, 0)
+            cv.adaptiveThreshold(src, src, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 15, 15)
+            cv.medianBlur(src,dst,3)
+            cv.imshow($canvas, dst);
+            x=tf.browser.fromPixels($canvas)
+            x = x.div(255)
+            q = x.max(2)
+            x=x.max(2).expandDims(2)
+            console.log(x.shape)
+            x = await x.array()
+            let model;
+            try {
+                model = await tf.loadLayersModel('indexeddb://' + modelDir)
+            } catch (e ) {
+                model = await tf.loadLayersModel(MODEL_URL)
+                const saveResults = await model.save('indexeddb://' + modelDir)
+            }
+            const old = Date.now()
+            let p = model.predict(tf.tensor([x]))
+            const used = (Date.now() - old) / 1000
+            console.log(used)
+            p = await p.array()
+            p = tf.tensor(p[0])
+            p = p.argMax(1)
+            p = await p.array()
+            p = p.map(idx => IDICT[idx]).join('')
+            console.log(p)
+            input.value = p
+        }
+        const docState = document.readyState
+        console.log(docState)
+        if(docState === 'complete') {
+            main()
+        }
+        img.addEventListener('load', main)
     </script>
 </body>
 </html>

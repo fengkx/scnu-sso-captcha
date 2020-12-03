@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 from model import load_model
 from dataset import cv_im_process, vec2text
+import json
 
 app = FastAPI()
 model = load_model()
@@ -22,6 +23,9 @@ def read_root():
 def read_item(id: int, q: Optional[str] = None):
     file_path = join(__dirname, 'dataset', 'codes', 'raw', f"{id}.jpg")
     x = cv_im_process(cv2.imread(file_path), flatten=False, normalize=True)
+    xx = json.loads(q)
+    xx = np.array(xx)
+    print(np.sum(np.array(x==xx, np.bool)))
     p = model.predict(np.array([x]))
     return vec2text(p[0])
     # return file_path
