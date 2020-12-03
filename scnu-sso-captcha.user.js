@@ -3,7 +3,7 @@
 // @name:zh-CN  SCNU SSO 验证码自动填充
 // @namespace   https://github.com/fengkx/
 // @match       https://sso.scnu.edu.cn/AccountService/openapi/login.html*
-// @match       https://sso.scnu.edu.cn/AccountService/user/login.html
+// @match       https://sso.scnu.edu.cn/AccountService/user/login.html*
 // @grant       none
 // @version     1.0
 // @author      fengkx
