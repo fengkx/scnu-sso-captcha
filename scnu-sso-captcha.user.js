@@ -7,7 +7,8 @@
 // @grant       none
 // @version     1.0
 // @author      fengkx
-// @description 12/3/2020, 10:42:17 AM
+// @description scnu sso captcha auto filler using tensorflow.js 0.8~0.91 accuracy
+// @description:zh-CN 基于 tensorflow.js SCNU SSO 验证码自动填充， 0.8~0.91 准确率
 // @supportURL https://github.com/fengkx/scnu-sso-captcha
 // @run-at document-end
 // @require https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.7.0/dist/tf.min.js
