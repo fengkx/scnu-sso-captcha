@@ -5,7 +5,7 @@
 // @match       https://sso.scnu.edu.cn/AccountService/openapi/login.html*
 // @match       https://sso.scnu.edu.cn/AccountService/user/login.html*
 // @grant       none
-// @version     1.0
+// @version     1.1
 // @author      fengkx
 // @description scnu sso captcha auto filler using tensorflow.js 0.8~0.91 accuracy
 // @description:zh-CN 基于 tensorflow.js SCNU SSO 验证码自动填充， 0.8~0.91 准确率
