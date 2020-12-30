@@ -20,7 +20,7 @@ const IDICT = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const HEIGHT = 50
 
 const $input = document.getElementById('rancode')
-const img = document.getElementById('codeimg')
+const img = document.getElementById('codeimg') || document.getElementById('code')
 
 const $canvas = document.createElement('canvas')
 $canvas.addEventListener('click', window.reloadcode)
@@ -50,7 +50,6 @@ async function main() {
     cv.imshow($canvas, dst);
     x=tf.browser.fromPixels($canvas)
     x = x.div(255)
-    q = x.max(2)
     x=x.max(2).expandDims(2)
     console.debug(x.shape)
     x = await x.array()
