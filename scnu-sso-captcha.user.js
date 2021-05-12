@@ -5,7 +5,7 @@
 // @match       https://sso.scnu.edu.cn/AccountService/openapi/login.html*
 // @match       https://sso.scnu.edu.cn/AccountService/user/login.html*
 // @grant       none
-// @version     1.2
+// @version     1.3
 // @author      fengkx
 // @description scnu sso captcha auto filler using tensorflow.js 0.8~0.91 accuracy
 // @description:zh-CN 基于 tensorflow.js SCNU SSO 验证码自动填充， 0.8~0.91 准确率
@@ -41,6 +41,7 @@ async function main() {
     'color: #000; background: #fffcc8; padding:5px 0;',
     'background: #fadfa3; padding:5px 0;'
   )
+
   const $img = img.cloneNode()
   $img.width = WIDTH
   $img.height = HEIGHT
@@ -90,11 +91,10 @@ async function main() {
   console.log(p)
   $input.value = p
 }
-setTimeout(() => {
-  const docState = document.readyState
-  console.log(docState)
-  if (docState === 'complete') {
+document.addEventListener('readystatechange', (event) => {
+  if (event.target.readyState === 'complete') {
     main()
   }
-  img.addEventListener('load', main)
-}, 0)
+});
+
+img.addEventListener('load', main)
