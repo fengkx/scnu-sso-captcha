@@ -4,11 +4,12 @@
 // @namespace   https://github.com/fengkx/
 // @match       https://sso.scnu.edu.cn/AccountService/openapi/login.html*
 // @match       https://sso.scnu.edu.cn/AccountService/user/login.html*
+// @match       https://sso.scnu.edu.cn/AccountService/user/index.html*
 // @grant       none
-// @version     1.3
+// @version     2.0
 // @author      fengkx
-// @description scnu sso captcha auto filler using tensorflow.js 0.8~0.91 accuracy
-// @description:zh-CN 基于 tensorflow.js SCNU SSO 验证码自动填充， 0.8~0.91 准确率
+// @description scnu sso captcha auto filler using tensorflow.js 0.89~0.93 accuracy
+// @description:zh-CN 基于 tensorflow.js SCNU SSO 验证码自动填充， 0.89~0.93 准确率
 // @supportURL https://github.com/fengkx/scnu-sso-captcha
 // @run-at document-end
 // @require https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.7.0/dist/tf.min.js
@@ -27,21 +28,19 @@ const $canvas = document.createElement('canvas')
 $canvas.addEventListener('click', window.reloadcode)
 $canvas.width = WIDTH
 $canvas.height = HEIGHT
-const isUseLite = navigator.userAgent.indexOf('Firefox') >= 0
-const modelDir = isUseLite ? 'js-model-lite-1' : 'js-model-3'
-const MODEL_URL =
-  'https://cdn.jsdelivr.net/gh/fengkx/scnu-sso-captcha@0.1.0/web-model/' +
-  modelDir +
-  '/model.json'
+const isUseLite = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/.test(navigator.userAgent)
+const modelDir = isUseLite ? 'js-model-lite' : 'js-model'
+const modelVersion = 'v2'
+const modelKey = `${modelVersion}/${modelDir}`
+const MODEL_URL = `https://cdn.jsdelivr.net/gh/fengkx/scnu-sso-captcha@master/web-model/${modelKey}/model.json`;
 console.debug(MODEL_URL)
-
-async function main() {
-  console.log(
-    `${'\n'} %c SCNU SSO auto captcha filler v1.2 %c https://github.com/fengkx/scnu-sso-captcha ${'\n'}${'\n'}`,
+console.log(
+    `${'\n'} %c SCNU SSO auto captcha filler v2.0 %c https://github.com/fengkx/scnu-sso-captcha ${'\n'}${'\n'}`,
     'color: #000; background: #fffcc8; padding:5px 0;',
     'background: #fadfa3; padding:5px 0;'
   )
-
+let model = null;
+async function main() {
   const $img = img.cloneNode()
   $img.width = WIDTH
   $img.height = HEIGHT
@@ -72,14 +71,16 @@ async function main() {
   x = x.max(2).expandDims(2)
   console.debug(x.shape)
   x = await x.array()
-  let model
-  try {
-    model = await tf.loadLayersModel('indexeddb://' + modelDir)
-  } catch (e) {
-    model = await tf.loadLayersModel(MODEL_URL)
-    const saveResults = await model.save('indexeddb://' + modelDir)
-  }
+  
   const old = Date.now()
+  if(!model) {
+    try {
+      model = await tf.loadGraphModel('indexeddb://' + modelKey)
+    } catch (e) {
+      model = await tf.loadGraphModel(MODEL_URL)
+      const saveResults = await model.save('indexeddb://' + modelKey)
+    }
+  }
   let p = model.predict(tf.tensor([x]))
   const used = (Date.now() - old) / 1000
   console.debug(used)
