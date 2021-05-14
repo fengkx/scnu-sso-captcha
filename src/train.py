@@ -1,7 +1,7 @@
 import os
 from os.path import join
 from dataset import cv_im_process,  load_dataset, text2vec, vec2text
-from model import get_model, checkpoint_predict
+from model import get_model, checkpoint_predict, load_model
 import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping, Callback as TfCallback
 from config import OUTPUT_DIR
@@ -15,7 +15,7 @@ class EpochPredictCallback(TfCallback):
 
 
 print('shapes: ', x_train.shape, t_test.shape)
-model = get_model()
+model = load_model()
 history = model.fit(
     x_train,
     t_train,

@@ -21,7 +21,7 @@ headers = {
 model = load_model()
 rand_path = '/tmp/qwsadasger12adasdasdw'
 with requests.Session() as client:
-    for i in range(500):
+    for i in range(200):
         r = client.get(
             'https://sso.scnu.edu.cn/AccountService/user/rancode.jpg', headers=headers, stream=True)
         with open(rand_path, 'w+b') as f:
@@ -43,4 +43,7 @@ with requests.Session() as client:
         print(is_correct, i)
         if not is_correct:
             dst = join(__dirname, 'dataset', 'codes', 'incorrect', code)
+            shutil.copyfile(rand_path, dst=dst)
+        else:
+            dst = join(__dirname, 'dataset', 'codes', 'correct', code)
             shutil.copyfile(rand_path, dst=dst)
