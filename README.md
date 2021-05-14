@@ -87,7 +87,11 @@ _________________________________________________________________
 softmax (Softmax)            (None, 4, 36)             0
 =================================================================
 ```
-因为 Firefox 在运行该模型耗时较长约是 Chromium 中的 3~4 倍。所以在去除几层神经网络之后重新训练的Lite版模型可以将 Firefox 上的耗时控制在一个比较合理的水平。在 user script 中会根据 `navigator.userAgent` 来选用模型。Lite版模型准确率从 0.919 最多下降到 0.806。 lite-1 版模型精简程度较少，准确率更高。算是一个比较好的平衡，将会用在 Firefox 的油猴脚本中。
+~~因为 Firefox 在运行该模型耗时较长约是 Chromium 中的 3~4 倍。所以在去除几层神经网络之后重新训练的Lite版模型可以将 Firefox 上的耗时控制在一个比较合理的水平。在 user script 中会根据 `navigator.userAgent` 来选用模型。Lite版模型准确率从 0.919 最多下降到 0.806。 lite-1 版模型精简程度较少，准确率更高。算是一个比较好的平衡，将会用在 Firefox 的油猴脚本中。~~
+
+v2 update: Lite 模型会用在移动设备（目前只有Firefox Android Nightly版能安Violentmonkey）
+
+![200 test result](https://0xffff-1251477793.file.myqcloud.com/assets/files/2021-05-13/1620901992-84995-image.png)
 
 ## Heavy
 `saved-model/model-heavy.tar.gz`
